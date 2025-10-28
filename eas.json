@@ -11,14 +11,9 @@
       "distribution": "internal"
     },
     "production": {
-      "distribution": "store"
-    }
-  },
-  "submit": {
-    "production": {
+      "distribution": "store",
       "android": {
-        "serviceAccount": "service-account.json",
-        "track": "internal"
+        "buildType": "app-bundle"
       }
     }
   }
