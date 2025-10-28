@@ -1,7 +1,6 @@
 # 📱 Inglês Diário - Aplicativo de Aprendizado de Inglês
 
-Um aplicativo Android interativo para aprender inglês de forma divertida, similar ao Duolingo.
-
+Um aplicativo Android interativo para aprender inglês de forma divertida.
 ## ✨ Características
 
 - **Lições Estruturadas**: Organizadas por níveis (Básico, Intermediário, Avançado)
