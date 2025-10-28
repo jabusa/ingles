@@ -6,18 +6,22 @@ workflows:
       node: 18
       vars:
         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
     cache:
       cache_paths:
         - $HOME/.npm
     scripts:
       - name: Instalar dependências
-        script: npm ci
-      - name: Verificações rápidas (não falha o build)
-        script: npx expo-doctor || true
+        script: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+      - name: Instalar EAS CLI global
+        script: npm i -g eas-cli
+      - name: Conferir EAS
+        script: eas --version
       - name: Build EAS (Android • production)
-        script: npx eas build -p android --profile production --non-interactive
+        script: eas build -p android --profile production --non-interactive
       - name: Baixar o AAB gerado
-        script: npx eas build:download --latest --platform android --output app.aab
+        script: eas build:download --latest --platform android --output app.aab
     artifacts:
       - app.aab
     publishing:
@@ -32,17 +36,21 @@ workflows:
       node: 18
       vars:
         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
         GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
     cache:
       cache_paths:
         - $HOME/.npm
     scripts:
       - name: Instalar dependências
-        script: npm ci
+        script: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+      - name: Instalar EAS CLI global
+        script: npm i -g eas-cli
       - name: Build EAS (Android • production)
-        script: npx eas build -p android --profile production --non-interactive
+        script: eas build -p android --profile production --non-interactive
       - name: Enviar para Google Play (track internal)
-        script: npx eas submit -p android --latest --track internal --non-interactive
+        script: eas submit -p android --latest --track internal --non-interactive
     artifacts:
       - app.aab
     publishing:
