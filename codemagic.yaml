@@ -1,0 +1,51 @@
+workflows:
+  expo_android_build:
+    name: Expo Android • Build AAB (download artifact)
+    max_build_duration: 60
+    environment:
+      node: 18
+      vars:
+        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+    cache:
+      cache_paths:
+        - $HOME/.npm
+    scripts:
+      - name: Instalar dependências
+        script: npm ci
+      - name: Verificações rápidas (não falha o build)
+        script: npx expo-doctor || true
+      - name: Build EAS (Android • production)
+        script: npx eas build -p android --profile production --non-interactive
+      - name: Baixar o AAB gerado
+        script: npx eas build:download --latest --platform android --output app.aab
+    artifacts:
+      - app.aab
+    publishing:
+      email:
+        recipients:
+          - rodrigoramalhov@gmail.com
+
+  expo_android_submit_internal:
+    name: Expo Android • Build + Submit (Teste Interno)
+    max_build_duration: 60
+    environment:
+      node: 18
+      vars:
+        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+    cache:
+      cache_paths:
+        - $HOME/.npm
+    scripts:
+      - name: Instalar dependências
+        script: npm ci
+      - name: Build EAS (Android • production)
+        script: npx eas build -p android --profile production --non-interactive
+      - name: Enviar para Google Play (track internal)
+        script: npx eas submit -p android --latest --track internal --non-interactive
+    artifacts:
+      - app.aab
+    publishing:
+      email:
+        recipients:
+          - rodrigoramalhov@gmail.com
